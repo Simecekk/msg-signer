@@ -29,7 +29,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[
     'msg-signer.herokuapp.com',
-    '127.0.0.1:8000',
+    '127.0.0.1',
 ])
 
 

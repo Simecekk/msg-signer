@@ -33,7 +33,6 @@
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 <script>
-
     function asciiToHex(str) {
         if (!str)
             return "0x00";
@@ -49,7 +48,7 @@
     function checkWeb3(callback) {
         window.ethereum.request({method: 'eth_accounts'})
             .then((result) => {
-                callback(result !== 0)
+                callback(result.length !== 0)
             })
             .catch((error) => {
                 throw error;
@@ -57,12 +56,12 @@
     }
 
     function startSigning() {
+        window.ethereum.enable();
         if (typeof web3 !== 'undefined') {
             checkWeb3(function (loggedIn) {
                 if (!loggedIn) {
                     alert("Please unlock your web3 provider (probably, Metamask)")
                 } else {
-                    console.log('Log 1');
                     let token = $('#id_msg').val();
                     let hex_token = asciiToHex(token);
                     window.ethereum.request({method: 'eth_accounts'})
