@@ -27,7 +27,10 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='secret')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[
+    'msg-signer.herokuapp.com',
+    '127.0.0.1:8000',
+])
 
 
 # Application definition
