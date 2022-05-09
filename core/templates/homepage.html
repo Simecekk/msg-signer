@@ -21,8 +21,9 @@
     <button type="button" onclick="startSigning()" class="btn btn-success btn-lg mt-3">Sign</button>
 
     <br><br>
-    <p class="text-white display-6">Signature : </p>
-    <p class="text-white mb-5" id="id_signature">Your signature will appears here..</p>
+    <p class="text-white display-6 mb-3">Signature : </p>
+    <p class="text-white mb-5" id="id_signer">The signer's address is displayed here..</p>
+    <p class="text-white mb-5" id="id_signature">Your signature is displayed here..</p>
 </div>
 
 <footer class="container fixed-bottom text-center">
@@ -66,7 +67,7 @@
                     let hex_token = asciiToHex(token);
                     window.ethereum.request({method: 'eth_accounts'})
                         .then((result) => {
-                            let from = result[0];
+                            const from = result[0];
                             window.ethereum.request(
                                 {
                                     method: 'personal_sign',
@@ -75,6 +76,7 @@
                                     ]
                                 })
                                 .then((result) => {
+                                    $('#id_signer').text(from);
                                     $('#id_signature').text(result);
                                 })
                                 .catch((error) => {
