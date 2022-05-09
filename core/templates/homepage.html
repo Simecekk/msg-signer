@@ -9,7 +9,8 @@
 <body style="background: #000000">
 
 <div class="container text-center">
-    <h1 class="mt-5 text-primary display-1">Web3 Message Signer</h1>
+    <h1 class="mt-5 text-primary display-3">Web3 Message Signer</h1>
+    <p class="text-white">Simple tool that let you sign message through your metamask and return the signature</p>
 
     <div class="row mt-5">
         <div class="col-2"></div>
@@ -17,14 +18,13 @@
         <div class="col-2"></div>
     </div>
 
-    <button type="button" onclick="startSigning()" class="btn btn-success mt-3">Sign</button>
+    <button type="button" onclick="startSigning()" class="btn btn-success btn-lg mt-3">Sign</button>
 
     <br><br>
     <p class="text-white display-6">Signature : </p>
     <p class="text-white" id="id_signature"></p>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
@@ -43,12 +43,13 @@
     }
 
     function checkWeb3(callback) {
-        web3.eth.getAccounts(function (err, accounts) { // Check for wallet being locked
-            if (err) {
-                throw err;
-            }
-            callback(accounts.length !== 0);
-        });
+        window.ethereum.request({method: 'eth_accounts'})
+            .then((result) => {
+                callback(result !== 0)
+            })
+            .catch((error) => {
+                throw error;
+            });
     }
 
     function startSigning() {
@@ -57,20 +58,25 @@
                 if (!loggedIn) {
                     alert("Please unlock your web3 provider (probably, Metamask)")
                 } else {
-                    var token = $('#id_msg').val();
-                    var hex_token = asciiToHex(token);
-                    var from = web3.eth.accounts[0];
-                    window.ethereum.request(
-                        {
-                            method: 'personal_sign',
-                            params: [
-                                from, hex_token
-                            ]
-                        })
+                    console.log('Log 1');
+                    let token = $('#id_msg').val();
+                    let hex_token = asciiToHex(token);
+                    window.ethereum.request({method: 'eth_accounts'})
                         .then((result) => {
-                            $('#id_signature').text(result);
-                            console.log(result);
-                            loginWithSignature(from, result, authUrl, redirect);
+                            let from = result[0];
+                            window.ethereum.request(
+                                {
+                                    method: 'personal_sign',
+                                    params: [
+                                        from, hex_token
+                                    ]
+                                })
+                                .then((result) => {
+                                    $('#id_signature').text(result);
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                });
                         })
                         .catch((error) => {
                             console.log(error);
